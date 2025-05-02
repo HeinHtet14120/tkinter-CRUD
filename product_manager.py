@@ -8,7 +8,7 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 # Create the main window
-root = tb.Window(themename="darkly")  # or "superhero", "cyborg", etc.
+root = tb.Window(themename="cyborg")  # or "superhero", "cyborg", etc.
 root.title("Product Management System")
 root.geometry("900x600")  # Set window size (width x height)
 
