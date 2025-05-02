@@ -4,18 +4,86 @@ from PIL import Image, ImageTk  # Add this import for handling images
 import os
 import csv
 from product_types import PRODUCT_TYPES
+import ttkbootstrap as tb
+from ttkbootstrap.constants import *
 
 # Create the main window
-root = tk.Tk()
+root = tb.Window(themename="darkly")  # or "superhero", "cyborg", etc.
 root.title("Product Management System")
 root.geometry("900x600")  # Set window size (width x height)
+
+style = ttk.Style()
+style.theme_use('clam')
+
+# Dark colors
+DARK_BG = "#23272e"
+DARK_FG = "#f5f6fa"
+DARK_ACCENT = "#4a90e2"
+DARK_HEADER = "#1a1d23"
+DARK_SELECT = "#357ab7"
+
+# Set window background
+root.configure(bg=DARK_BG)
+
+# Table header style
+style.configure("Treeview.Heading", 
+                font=("Arial", 12, "bold"), 
+                background=DARK_HEADER, 
+                foreground=DARK_ACCENT)
+
+# Table row style
+style.configure("Treeview", 
+                font=("Arial", 11),
+                rowheight=28,
+                background=DARK_BG,
+                fieldbackground=DARK_BG,
+                foreground=DARK_FG)
+
+# Selected row color
+style.map("Treeview", background=[('selected', DARK_SELECT)])
+
+# Custom button style
+style.configure("Custom.TButton",
+                font=("Arial", 12, "bold"),
+                foreground=DARK_FG,
+                background=DARK_ACCENT,
+                borderwidth=0,
+                focusthickness=3,
+                focuscolor='none',
+                padding=8)
+style.map("Custom.TButton",
+          background=[('active', DARK_SELECT)])
+
+# Entry and frame backgrounds
+style.configure("TEntry", fieldbackground=DARK_HEADER, foreground=DARK_FG)
+style.configure("TFrame", background=DARK_BG)
+style.configure("TLabel", background=DARK_BG, foreground=DARK_FG)
+
+# Combobox dark mode
+style.map('TCombobox', fieldbackground=[('readonly', DARK_HEADER)],
+          selectbackground=[('readonly', DARK_HEADER)],
+          selectforeground=[('readonly', DARK_FG)])
+style.configure('TCombobox', foreground=DARK_FG, background=DARK_HEADER)
+
+# Search entry style
+style.configure("Search.TEntry",
+    foreground=DARK_FG,
+    fieldbackground=DARK_HEADER,
+    background=DARK_HEADER,
+    bordercolor=DARK_ACCENT,
+    lightcolor=DARK_ACCENT,
+    darkcolor=DARK_HEADER,
+    borderwidth=2,
+    relief="flat",
+    padding=8
+)
 
 # CSV file path
 CSV_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'products.csv')
 
 # Create frames
 # Logo frame for the logo
-logo_frame = ttk.Frame(root, padding="10")
+logo_frame = ttk.Frame(root, padding="10", style="TFrame")
 logo_frame.pack(fill=tk.X)
 
 # Load and display the logo
@@ -55,10 +123,10 @@ title_label = ttk.Label(logo_frame, text="Product Management System",
                        font=("Helvetica", 16, "bold"))
 title_label.pack(side=tk.LEFT, padx=20)
 
-top_frame = ttk.Frame(root, padding="10")
+top_frame = ttk.Frame(root, padding="10", style="TFrame")
 top_frame.pack(fill=tk.X)
 
-main_frame = ttk.Frame(root, padding="10")
+main_frame = ttk.Frame(root, padding="10", style="TFrame")
 main_frame.pack(fill=tk.BOTH, expand=True)
 
 # Create a simple table structure using Treeview
@@ -132,6 +200,7 @@ def show_add_dialog():
     dialog.grab_set()
     dialog.title("Add New Product")
     dialog.geometry("500x500")
+    dialog.configure(bg=DARK_BG)
         
     def on_dialog_close():
         show_add_dialog.dialog_open = False
@@ -154,12 +223,12 @@ def show_add_dialog():
             entries['color'].configure(state='readonly')
 
     for idx, field in enumerate(fields):
-        label = ttk.Label(dialog, text=field.capitalize()+":")
+        label = ttk.Label(dialog, text=field.capitalize()+":", style="TLabel")
         label.grid(row=idx, column=0, padx=10, pady=5, sticky=tk.W)
         
         if field == 'type':
             # Create combobox for type selection
-            entry = ttk.Combobox(dialog, values=PRODUCT_TYPES, state='readonly')
+            entry = ttk.Combobox(dialog, values=PRODUCT_TYPES, state='readonly', style='TCombobox')
             entry.set("Select Type")  # Default text
             entry.grid(row=idx, column=1, padx=10, pady=5, sticky=tk.W)
         elif field == 'color':
@@ -170,13 +239,13 @@ def show_add_dialog():
             entry = ttk.Entry(color_frame, textvariable=current_color, state='readonly')
             entry.pack(side=tk.LEFT, padx=(0, 5))
             
-            color_preview = tk.Label(color_frame, width=3, background=current_color.get())
+            color_preview = tk.Label(color_frame, width=3, background=current_color.get(), fg=DARK_FG)
             color_preview.pack(side=tk.LEFT, padx=(0, 5))
             
             color_button = ttk.Button(color_frame, text="Pick Color", command=pick_color)
             color_button.pack(side=tk.LEFT)
         else:
-            entry = ttk.Entry(dialog)
+            entry = ttk.Entry(dialog, style="TEntry")
             entry.grid(row=idx, column=1, padx=10, pady=5)
         
         entries[field] = entry
@@ -204,7 +273,7 @@ def show_add_dialog():
         else:
             messagebox.showerror("Error", "Failed to save product!")
 
-    submit_btn = ttk.Button(dialog, text="Add", command=submit)
+    submit_btn = ttk.Button(dialog, text="Add", command=submit, style="Custom.TButton")
     submit_btn.grid(row=len(fields), column=0, columnspan=2, pady=15)
 
 def delete_selected_product():
@@ -246,6 +315,7 @@ def edit_selected_product():
     dialog.grab_set()
     dialog.title("Edit Product")
     dialog.geometry("500x500")
+    dialog.configure(bg=DARK_BG)
     
     entries = {}
     fields = columns
@@ -262,11 +332,11 @@ def edit_selected_product():
             entries['color'].configure(state='readonly')
 
     for idx, field in enumerate(fields):
-        label = ttk.Label(dialog, text=field.capitalize()+":")
+        label = ttk.Label(dialog, text=field.capitalize()+":", style="TLabel")
         label.grid(row=idx, column=0, padx=10, pady=5, sticky=tk.W)
         value = old_values[idx]
         if field == 'type':
-            entry = ttk.Combobox(dialog, values=PRODUCT_TYPES, state='readonly')
+            entry = ttk.Combobox(dialog, values=PRODUCT_TYPES, state='readonly', style='TCombobox')
             entry.set(value)
             entry.grid(row=idx, column=1, padx=10, pady=5, sticky=tk.W)
         elif field == 'color':
@@ -274,12 +344,12 @@ def edit_selected_product():
             color_frame.grid(row=idx, column=1, padx=10, pady=5, sticky=tk.W)
             entry = ttk.Entry(color_frame, textvariable=current_color, state='readonly')
             entry.pack(side=tk.LEFT, padx=(0, 5))
-            color_preview = tk.Label(color_frame, width=3, background=current_color.get())
+            color_preview = tk.Label(color_frame, width=3, background=current_color.get(), fg=DARK_FG)
             color_preview.pack(side=tk.LEFT, padx=(0, 5))
             color_button = ttk.Button(color_frame, text="Pick Color", command=pick_color)
             color_button.pack(side=tk.LEFT)
         else:
-            entry = ttk.Entry(dialog)
+            entry = ttk.Entry(dialog, style="TEntry")
             entry.insert(0, value)
             entry.grid(row=idx, column=1, padx=10, pady=5)
         entries[field] = entry
@@ -308,23 +378,29 @@ def edit_selected_product():
                 writer.writerow(tree.item(row_id)['values'])
         dialog.destroy()
 
-    submit_btn = ttk.Button(dialog, text="Save", command=submit)
+    submit_btn = ttk.Button(dialog, text="Save", command=submit, style="Custom.TButton")
     submit_btn.grid(row=len(fields), column=0, columnspan=2, pady=15)
 
 # Add basic buttons
-add_button = ttk.Button(top_frame, text="Add New", command=show_add_dialog)
+add_button = tb.Button(top_frame, text="Add New", bootstyle="success-outline", width=12, command=show_add_dialog)
 add_button.pack(side=tk.LEFT, padx=5)
 
-delete_button = ttk.Button(top_frame, text="Delete", command=delete_selected_product)
+delete_button = tb.Button(top_frame, text="Delete", bootstyle="danger-outline", width=12, command=delete_selected_product)
 delete_button.pack(side=tk.LEFT, padx=5)
 
-edit_button = ttk.Button(top_frame, text="Edit", command=edit_selected_product)
+edit_button = tb.Button(top_frame, text="Edit", bootstyle="info-outline", width=12, command=edit_selected_product)
 edit_button.pack(side=tk.LEFT, padx=5)
 
 # --- Search Bar ---
 search_var = tk.StringVar()
-search_entry = ttk.Entry(top_frame, textvariable=search_var, width=30)
-search_entry.pack(side=tk.LEFT, padx=5)
+
+# (Optional) Add a search icon before the entry
+search_icon = ttk.Label(top_frame, text="🔍", background=DARK_BG, foreground=DARK_ACCENT, font=("Arial", 14))
+search_icon.pack(side=tk.LEFT, padx=(0, 2))
+
+# Use the custom style for the search entry
+search_entry = ttk.Entry(top_frame, textvariable=search_var, width=30, style="Search.TEntry")
+search_entry.pack(side=tk.LEFT, padx=8, pady=4, ipady=2)
 
 def search_products():
     query = search_var.get().lower().strip()
@@ -348,10 +424,10 @@ def reset_search():
     search_var.set("")
     load_products()
 
-search_button = ttk.Button(top_frame, text="Search", command=search_products)
+search_button = tb.Button(top_frame, text="Search", bootstyle="primary-outline", width=10, command=search_products)
 search_button.pack(side=tk.LEFT, padx=2)
 
-reset_button = ttk.Button(top_frame, text="Reset", command=reset_search)
+reset_button = tb.Button(top_frame, text="Reset", bootstyle="secondary-outline", width=10, command=reset_search)
 reset_button.pack(side=tk.LEFT, padx=2)
 
 # Load products when starting the application

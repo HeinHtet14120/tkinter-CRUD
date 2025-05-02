@@ -1,14 +1,11 @@
 name,type,color,weight,price,brand
 Gaming Mouse,Electronics,#000000,150g,59.99,Logitech
 Office Chair,Furniture,#808080,12kg,199.99,Herman Miller
-Wireless Keyboard,Electronics,#FFFFFF,880g,89.99,Corsair
-Coffee Table,Furniture,#8B4513,8kg,149.99,IKEA
 Gaming Headset,Electronics,#FF0000,350g,129.99,SteelSeries
 Desk Lamp,Electronics,#C0C0C0,750g,34.99,Phillips
 Dining Table,Furniture,#654321,35kg,399.99,Ashley
 Bluetooth Speaker,Electronics,#0000FF,420g,79.99,JBL
-Mechanical Keyboard,Electronics,#FF0000,1.2kg,149.99,Razer
-Standing Desk,Furniture,#808080,45kg,499.99,Uplift
+Mechanical Keyboard,Electronics,#ff7f94,1.2kg,149.99,Razer
 Webcam,Electronics,#000000,120g,69.99,Logitech
 TV Stand,Furniture,#8B4513,30kg,249.99,Sauder
 Gaming Monitor,Electronics,#000000,4.5kg,349.99,ASUS
